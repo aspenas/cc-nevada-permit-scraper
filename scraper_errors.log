@@ -1,0 +1,8 @@
+2025-06-24 12:01:49.735 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 12:03:29.022 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 12:03:54.973 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 12:59:17.867 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 13:00:34.415 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 13:00:59.442 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 13:03:33.727 | ERROR    | scraper.enhanced_detail_scraper_final:scrape_permit:771 - Failed to login
+2025-06-24 13:03:33.728 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00

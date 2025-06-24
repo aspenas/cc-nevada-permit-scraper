@@ -1,0 +1,45 @@
+2025-06-24 12:01:49.735 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:289 - Could not parse financial value: abc
+2025-06-24 12:01:49.735 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:284 - Negative financial value: $-100.0
+2025-06-24 12:01:49.735 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:298 - Suspiciously low job value: $50.00
+2025-06-24 12:01:49.735 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 12:01:49.735 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:306 - High job value (above warning threshold): $60,000,000.00
+2025-06-24 12:01:49.736 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:799 - Scraping permit: TEST123
+2025-06-24 12:03:29.022 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:289 - Could not parse financial value: abc
+2025-06-24 12:03:29.022 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:284 - Negative financial value: $-100.0
+2025-06-24 12:03:29.022 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:298 - Suspiciously low job value: $50.00
+2025-06-24 12:03:29.022 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 12:03:29.022 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:306 - High job value (above warning threshold): $60,000,000.00
+2025-06-24 12:03:29.023 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:799 - Scraping permit: TEST123
+2025-06-24 12:03:54.973 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:289 - Could not parse financial value: abc
+2025-06-24 12:03:54.973 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:284 - Negative financial value: $-100.0
+2025-06-24 12:03:54.973 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:298 - Suspiciously low job value: $50.00
+2025-06-24 12:03:54.973 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 12:03:54.973 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:306 - High job value (above warning threshold): $60,000,000.00
+2025-06-24 12:03:54.974 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:799 - Scraping permit: TEST123
+2025-06-24 12:59:17.867 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:289 - Could not parse financial value: abc
+2025-06-24 12:59:17.867 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:284 - Negative financial value: $-100.0
+2025-06-24 12:59:17.867 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:298 - Suspiciously low job value: $50.00
+2025-06-24 12:59:17.867 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 12:59:17.867 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:306 - High job value (above warning threshold): $60,000,000.00
+2025-06-24 12:59:17.868 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:799 - Scraping permit: TEST123
+2025-06-24 13:00:34.414 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:289 - Could not parse financial value: abc
+2025-06-24 13:00:34.414 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:284 - Negative financial value: $-100.0
+2025-06-24 13:00:34.415 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:298 - Suspiciously low job value: $50.00
+2025-06-24 13:00:34.415 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 13:00:34.415 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:306 - High job value (above warning threshold): $60,000,000.00
+2025-06-24 13:00:34.415 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:799 - Scraping permit: TEST123
+2025-06-24 13:00:59.441 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:289 - Could not parse financial value: abc
+2025-06-24 13:00:59.442 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:284 - Negative financial value: $-100.0
+2025-06-24 13:00:59.442 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:298 - Suspiciously low job value: $50.00
+2025-06-24 13:00:59.442 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 13:00:59.442 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:306 - High job value (above warning threshold): $60,000,000.00
+2025-06-24 13:00:59.443 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:799 - Scraping permit: TEST123
+2025-06-24 13:03:33.720 | WARNING  | scraper.enhanced_detail_scraper_final:parse_address_advanced:242 - Advanced address parsing failed: fail
+2025-06-24 13:03:33.721 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:284 - Negative financial value: $-100.0
+2025-06-24 13:03:33.721 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:289 - Could not parse financial value: notanumber
+2025-06-24 13:03:33.727 | ERROR    | scraper.enhanced_detail_scraper_final:scrape_permit:771 - Failed to login
+2025-06-24 13:03:33.728 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:298 - Suspiciously low job value: $50.00
+2025-06-24 13:03:33.728 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 13:03:33.728 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:306 - High job value (above warning threshold): $60,000,000.00
+2025-06-24 13:03:33.729 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:799 - Scraping permit: TEST123
+2025-06-24 13:15:44.687 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:799 - Scraping permit: E2E-123

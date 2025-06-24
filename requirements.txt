@@ -1,0 +1,10 @@
+selenium
+python-dotenv
+loguru
+usaddress
+pytest
+boto3
+sqlalchemy
+pytest-cov
+bandit
+pip-audit 

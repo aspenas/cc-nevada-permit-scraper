@@ -1,0 +1,62 @@
+# [![codecov](https://codecov.io/gh/USER/REPO/branch/main/graph/badge.svg)](https://codecov.io/gh/USER/REPO)
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, staging, prod]
+        python-version: [3.9, 3.10, 3.11, 3.12, 3.13]
+    env:
+      ENVIRONMENT: ${{ matrix.environment }}
+      AWS_REGION: us-west-2
+      DB_SECRET_NAME: clark-county-permit-db-${{ matrix.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pip dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install ruff pytest mypy black boto3 python-dotenv loguru
+      - name: Lint with ruff
+        run: ruff .
+      - name: Check code style with black
+        run: black --check .
+      - name: Type check with mypy
+        run: mypy scraper/
+      - name: Run tests
+        run: pytest --maxfail=2 --disable-warnings --cov=./scraper tests/
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+      - name: Security scan with Bandit
+        run: bandit -r scraper/ || true
+      - name: Dependency vulnerability check with pip-audit
+        run: pip install pip-audit && pip-audit || true
+      - name: AWS CLI - Retrieve DB Secret
+        run: |
+          aws --version
+          aws secretsmanager get-secret-value --region $AWS_REGION --secret-id $DB_SECRET_NAME || echo "Secret fetch skipped in CI preview"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+      - name: Docker build
+        run: docker build -t clark-county-scraper .
+      - name: Notify on failure (placeholder)
+        if: failure()
+        run: |
+          echo "CI failed for ${{ matrix.environment }}. Add Slack/email notification here." 
