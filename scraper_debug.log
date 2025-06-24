@@ -43,3 +43,33 @@
 2025-06-24 13:03:33.728 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:306 - High job value (above warning threshold): $60,000,000.00
 2025-06-24 13:03:33.729 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:799 - Scraping permit: TEST123
 2025-06-24 13:15:44.687 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:799 - Scraping permit: E2E-123
+2025-06-24 23:11:22.568 | WARNING  | scraper.enhanced_detail_scraper_final:<module>:64 - CloudWatch logging not enabled: Handler.__init__() got an unexpected keyword argument 'region_name'
+2025-06-24 23:11:24.678 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:829 - Scraping permit: E2E-123
+2025-06-24 23:11:25.735 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeSuccess: Unable to locate credentials
+2025-06-24 23:11:25.741 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeDuration: Unable to locate credentials
+2025-06-24 23:11:25.865 | WARNING  | scraper.enhanced_detail_scraper_final:parse_address_advanced:273 - Advanced address parsing failed: fail
+2025-06-24 23:11:25.866 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:317 - Negative financial value: $-100.0
+2025-06-24 23:11:25.866 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:322 - Could not parse financial value: notanumber
+2025-06-24 23:11:25.867 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:829 - Scraping permit: BAD-LOGIN
+2025-06-24 23:11:25.867 | ERROR    | scraper.enhanced_detail_scraper_final:extract_permit_details:639 - Error extracting permit details: 'NoneType' object has no attribute 'get'
+2025-06-24 23:11:25.871 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeFailure: Unable to locate credentials
+2025-06-24 23:11:25.875 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeDuration: Unable to locate credentials
+2025-06-24 23:11:25.878 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeErrorCount: Unable to locate credentials
+2025-06-24 23:12:15.822 | WARNING  | scraper.enhanced_detail_scraper_final:<module>:64 - CloudWatch logging not enabled: Handler.__init__() got an unexpected keyword argument 'region_name'
+2025-06-24 23:12:17.911 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:830 - Scraping permit: E2E-123
+2025-06-24 23:12:17.942 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeSuccess: Unable to locate credentials
+2025-06-24 23:12:17.946 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeDuration: Unable to locate credentials
+2025-06-24 23:12:17.953 | WARNING  | scraper.enhanced_detail_scraper_final:parse_address_advanced:273 - Advanced address parsing failed: fail
+2025-06-24 23:12:17.954 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:317 - Negative financial value: $-100.0
+2025-06-24 23:12:17.954 | WARNING  | scraper.enhanced_detail_scraper_final:extract_financial_value:322 - Could not parse financial value: notanumber
+2025-06-24 23:12:17.955 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:830 - Scraping permit: BAD-LOGIN
+2025-06-24 23:12:17.955 | ERROR    | scraper.enhanced_detail_scraper_final:extract_permit_details:639 - Error extracting permit details: 'NoneType' object has no attribute 'get'
+2025-06-24 23:12:17.959 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeFailure: Unable to locate credentials
+2025-06-24 23:12:17.964 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeDuration: Unable to locate credentials
+2025-06-24 23:12:17.968 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeErrorCount: Unable to locate credentials
+2025-06-24 23:12:17.969 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:333 - Suspiciously low job value: $50.00
+2025-06-24 23:12:17.969 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:339 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 23:12:17.969 | WARNING  | scraper.enhanced_detail_scraper_final:validate_financial_data:343 - High job value (above warning threshold): $60,000,000.00
+2025-06-24 23:12:17.970 | INFO     | scraper.enhanced_detail_scraper_final:scrape_permit:830 - Scraping permit: TEST123
+2025-06-24 23:12:17.974 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeSuccess: Unable to locate credentials
+2025-06-24 23:12:17.978 | WARNING  | scraper.enhanced_detail_scraper_final:emit_metric:822 - Failed to emit CloudWatch metric PermitScrapeDuration: Unable to locate credentials

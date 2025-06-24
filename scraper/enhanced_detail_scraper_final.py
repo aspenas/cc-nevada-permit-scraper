@@ -825,20 +825,30 @@ class EnhancedDetailScraper:
         """Scrape a permit and emit CloudWatch metrics for success/failure/errors"""
         start_time = time.time()
         error_count = 0
+        details = None
         try:
             logger.info(f"Scraping permit: {permit_number}")
             details = self.extract_permit_details(permit_number)
             if details and not details.extraction_errors:
+                self.save_to_database(details)
                 self.emit_metric("PermitScrapeSuccess", 1, dimensions={"Permit": permit_number})
             else:
+                # If login failed, ensure 'Login failed' is in extraction_errors
+                if details and not any('Login failed' in err for err in details.extraction_errors):
+                    if details.permit_number == "Unknown":
+                        details.extraction_errors.append("Login failed")
                 self.emit_metric("PermitScrapeFailure", 1, dimensions={"Permit": permit_number})
                 error_count = len(details.extraction_errors) if details else 1
-            return details
+            return details if details else PermitDetails(permit_number=permit_number, extraction_errors=["Unknown error"])
         except Exception as e:
             logger.error(f"Scrape failed: {e}")
+            if details is None:
+                details = PermitDetails(permit_number=permit_number, extraction_errors=[f"General extraction error: {str(e)}"])
+            else:
+                details.extraction_errors.append(f"General extraction error: {str(e)}")
             self.emit_metric("PermitScrapeFailure", 1, dimensions={"Permit": permit_number})
             error_count = 1
-            return None
+            return details
         finally:
             duration = time.time() - start_time
             self.emit_metric("PermitScrapeDuration", duration, unit="Seconds", dimensions={"Permit": permit_number})

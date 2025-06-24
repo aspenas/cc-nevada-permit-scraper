@@ -6,3 +6,6 @@
 2025-06-24 13:00:59.442 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
 2025-06-24 13:03:33.727 | ERROR    | scraper.enhanced_detail_scraper_final:scrape_permit:771 - Failed to login
 2025-06-24 13:03:33.728 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:302 - Suspiciously high job value: $1,000,000,000.00
+2025-06-24 23:11:25.867 | ERROR    | scraper.enhanced_detail_scraper_final:extract_permit_details:639 - Error extracting permit details: 'NoneType' object has no attribute 'get'
+2025-06-24 23:12:17.955 | ERROR    | scraper.enhanced_detail_scraper_final:extract_permit_details:639 - Error extracting permit details: 'NoneType' object has no attribute 'get'
+2025-06-24 23:12:17.969 | ERROR    | scraper.enhanced_detail_scraper_final:validate_financial_data:339 - Suspiciously high job value: $1,000,000,000.00
