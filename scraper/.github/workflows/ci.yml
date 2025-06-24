@@ -37,6 +37,8 @@ jobs:
         run: mypy scraper/
       - name: Run tests
         run: pytest --maxfail=2 --disable-warnings --cov=./scraper tests/
+      - name: Run pre-commit checks
+        uses: pre-commit/action@v3.0.1
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -56,7 +58,25 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
       - name: Docker build
         run: docker build -t clark-county-scraper .
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest
       - name: Notify on failure (placeholder)
         if: failure()
         run: |
-          echo "CI failed for ${{ matrix.environment }}. Add Slack/email notification here." 
+          echo "CI failed for ${{ matrix.environment }}. Add Slack/email notification here."
+      - name: Notify Slack on failure
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: "CI failed for ${{ github.repository }} on ${{ github.ref }}" 
