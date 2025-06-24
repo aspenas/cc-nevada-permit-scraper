@@ -1,1 +1,1 @@
- 
+[![codecov](https://codecov.io/gh/aspenas/cc-nevada-permit-scraper/branch/main/graph/badge.svg)](https://codecov.io/gh/aspenas/cc-nevada-permit-scraper) 
