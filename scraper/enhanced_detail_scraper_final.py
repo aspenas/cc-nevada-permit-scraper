@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Enhanced Clark County Permit Detail Scraper with Authentication
-Extracts comprehensive permit details with data quality validation and completeness scoring
+Extracts comprehensive permit details with data quality validation and
+completeness scoring
 """
 
 import re
@@ -10,7 +11,7 @@ import time
 import sqlite3
 import hashlib
 from datetime import datetime
-from typing import Dict, Any, Optional, List, Tuple
+from typing import Dict, Any, Optional, List
 from dataclasses import dataclass, field
 from pathlib import Path
 import os
@@ -21,22 +22,46 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
 from loguru import logger
 import usaddress
+import boto3
+import great_expectations as ge
+import watchtower  # CloudWatch logging handler
 
 # Load environment variables
 load_dotenv()
 
 # Configure logging
 logger.add("scraper_errors.log", level="ERROR", rotation="10 MB")
-logger.add("scraper_debug.log", level="DEBUG", rotation="50 MB")
+logger.add(
+    "scraper_debug.log",
+    level="DEBUG",
+    rotation="50 MB"
+)
 
 # Financial validation thresholds
 JOB_VALUE_MIN = 100  # $100 minimum
 JOB_VALUE_MAX = 500_000_000  # $500M maximum
 JOB_VALUE_WARNING_THRESHOLD = 50_000_000  # $50M warning threshold
+
+# --- CloudWatch Logging Integration ---
+CLOUDWATCH_LOG_GROUP = os.getenv("CLOUDWATCH_LOG_GROUP", f"/aws/cc-nevada-permit-scraper/{os.getenv('ENVIRONMENT', 'prod')}")
+AWS_REGION = os.getenv("AWS_REGION", "us-west-2")
+
+try:
+    logger.add(
+        watchtower.CloudWatchLogHandler(
+            log_group=CLOUDWATCH_LOG_GROUP,
+            region_name=AWS_REGION,
+        ),
+        level="INFO",
+        enqueue=True,
+        serialize=True,
+    )
+    logger.info(f"CloudWatch logging enabled: {CLOUDWATCH_LOG_GROUP}")
+except Exception as e:
+    logger.warning(f"CloudWatch logging not enabled: {e}")
 
 @dataclass
 class PermitDetails:
@@ -145,12 +170,16 @@ class EnhancedDetailScraper:
         
         self.driver = webdriver.Chrome(options=options)
         self.wait = WebDriverWait(self.driver, 10)
-        logger.info("Chrome driver initialized")
+        logger.info(
+            "Chrome driver initialized"
+        )
         
     def login_to_clark_county(self) -> bool:
         """Login to Clark County permit system"""
         try:
-            logger.info(f"Attempting to login as {self.username}")
+            logger.info(
+                f"Attempting to login as {self.username}"
+            )
             
             # Navigate to login page
             login_url = "https://aca-prod.accela.com/CLARKCO/Login.aspx"
@@ -162,7 +191,9 @@ class EnhancedDetailScraper:
                 EC.presence_of_element_located((By.ID, "LoginFrame"))
             )
             self.driver.switch_to.frame(login_frame)
-            logger.debug("Switched to login iframe")
+            logger.debug(
+                "Switched to login iframe"
+            )
             
             # Enter username
             username_field = self.wait.until(
@@ -239,7 +270,9 @@ class EnhancedDetailScraper:
             return result
             
         except Exception as e:
-            logger.warning(f"Advanced address parsing failed: {e}")
+            logger.warning(
+                f"Advanced address parsing failed: {e}"
+            )
             # Fallback to basic regex parsing
             return self.parse_address_fallback(address)
     
@@ -286,7 +319,9 @@ class EnhancedDetailScraper:
             
             return value
         except ValueError:
-            logger.warning(f"Could not parse financial value: {text}")
+            logger.warning(
+                f"Could not parse financial value: {text}"
+            )
             return None
     
     def validate_financial_data(self, data: Dict[str, Any]) -> None:
@@ -295,7 +330,9 @@ class EnhancedDetailScraper:
             value = float(data['job_value'])
             
             if value < self.JOB_VALUE_MIN:
-                logger.warning(f"Suspiciously low job value: ${value:,.2f}")
+                logger.warning(
+                    f"Suspiciously low job value: ${value:,.2f}"
+                )
                 data['job_value_validation_flag'] = 'too_low'
                 data['data_quality_flags'].append('low_job_value')
             elif value > self.JOB_VALUE_MAX:
@@ -347,8 +384,8 @@ class EnhancedDetailScraper:
         total_weight = sum(field_weights.values())
         earned_weight = 0
         
-        for field, weight in field_weights.items():
-            value = getattr(details, field, None)
+        for field_name, weight in field_weights.items():
+            value = getattr(details, field_name, None)
             if value is not None and str(value).strip():
                 earned_weight += weight
         
@@ -391,7 +428,9 @@ class EnhancedDetailScraper:
         except NoSuchElementException:
             return None
         except Exception as e:
-            logger.debug(f"Extraction error for {selector}: {e}")
+            logger.debug(
+                f"Extraction error for {selector}: {e}"
+            )
             return None
     
     def extract_fees_table(self) -> List[Dict[str, Any]]:
@@ -761,55 +800,50 @@ class EnhancedDetailScraper:
         
         logger.info(f"Saved permit {details.permit_number} to database")
     
-    def scrape_permit(self, permit_number: str) -> Optional[PermitDetails]:
-        """Main method to scrape a single permit"""
+    def emit_metric(self, name: str, value: float, unit: str = "Count", dimensions: dict = None):
+        """Emit a custom CloudWatch metric via boto3"""
         try:
-            if not self.driver:
-                self.setup_driver()
-                # Login first
-                if not self.login_to_clark_county():
-                    logger.error("Failed to login")
-                    return None
-            
-            # Construct permit URL based on permit format
-            base_url = "https://aca-prod.accela.com/CLARKCO/Cap/CapDetail.aspx"
-            
-            # Parse permit number (e.g., BD25-23553)
-            permit_match = re.match(r'^([A-Z]+)(\d{2})-(\d+)$', permit_number)
-            if permit_match:
-                module = permit_match.group(1)
-                year = permit_match.group(2)
-                sequence = permit_match.group(3).zfill(5)
-                
-                # Map module codes to names
-                module_map = {
-                    'BD': 'Building',
-                    'BLD': 'Building',
-                    'PL': 'Planning',
-                    'FD': 'Fire',
-                    'PW': 'PublicWorks'
-                }
-                module_name = module_map.get(module, 'Building')
-                
-                permit_url = f"{base_url}?Module={module_name}&TabName={module_name}&capID1=REC{year}&capID2=00000&capID3={sequence}"
-            else:
-                # Fallback for unknown format
-                permit_url = f"{base_url}?Module=Building&capID1=REC24&capID2=00000&capID3={permit_number}"
-            
-            logger.info(f"Scraping permit: {permit_number}")
-            
-            # Extract details
-            details = self.extract_permit_details(permit_url)
-            
-            # Save to database
-            if details.permit_number != "Unknown":
-                self.save_to_database(details)
-            
-            return details
-            
+            cw = boto3.client("cloudwatch", region_name=AWS_REGION)
+            metric_data = {
+                "MetricName": name,
+                "Value": value,
+                "Unit": unit,
+            }
+            if dimensions:
+                metric_data["Dimensions"] = [
+                    {"Name": k, "Value": str(v)} for k, v in dimensions.items()
+                ]
+            cw.put_metric_data(
+                Namespace="ClarkCounty/Scraper",
+                MetricData=[metric_data],
+            )
+            logger.debug(f"Emitted CloudWatch metric: {name}={value}")
         except Exception as e:
-            logger.error(f"Error scraping permit {permit_number}: {e}")
+            logger.warning(f"Failed to emit CloudWatch metric {name}: {e}")
+    
+    def scrape_permit(self, permit_number: str) -> Optional[PermitDetails]:
+        """Scrape a permit and emit CloudWatch metrics for success/failure/errors"""
+        start_time = time.time()
+        error_count = 0
+        try:
+            logger.info(f"Scraping permit: {permit_number}")
+            details = self.extract_permit_details(permit_number)
+            if details and not details.extraction_errors:
+                self.emit_metric("PermitScrapeSuccess", 1, dimensions={"Permit": permit_number})
+            else:
+                self.emit_metric("PermitScrapeFailure", 1, dimensions={"Permit": permit_number})
+                error_count = len(details.extraction_errors) if details else 1
+            return details
+        except Exception as e:
+            logger.error(f"Scrape failed: {e}")
+            self.emit_metric("PermitScrapeFailure", 1, dimensions={"Permit": permit_number})
+            error_count = 1
             return None
+        finally:
+            duration = time.time() - start_time
+            self.emit_metric("PermitScrapeDuration", duration, unit="Seconds", dimensions={"Permit": permit_number})
+            if error_count:
+                self.emit_metric("PermitScrapeErrorCount", error_count, dimensions={"Permit": permit_number})
     
     def close(self):
         """Close the browser"""
@@ -817,34 +851,76 @@ class EnhancedDetailScraper:
             self.driver.quit()
             logger.info("Browser closed")
 
+def export_to_s3(details, bucket, prefix=""):
+    s3 = boto3.client("s3")
+    key = (
+        f"{prefix}permit_{details.permit_number}_"
+        f"{details.scraped_timestamp}.json"
+    )
+    s3.put_object(
+        Bucket=bucket,
+        Key=key,
+        Body=json.dumps(details.__dict__, default=str),
+        ContentType="application/json"
+    )
+    logger.info(
+        f"Exported permit {details.permit_number} to s3://{bucket}/{key}"
+    )
+
+
+def validate_details_with_ge(details):
+    # Minimal example: validate job_value is not None and > 0
+    df = ge.dataset.PandasDataset([details.__dict__])
+    results = df.expect_column_values_to_not_be_null("job_value")
+    results2 = df.expect_column_values_to_be_between(
+        "job_value", 1, 1e10
+    )
+    if not (results["success"] and results2["success"]):
+        logger.error(
+            f"Great Expectations validation failed: {results}, {results2}"
+        )
+        return False
+    logger.info("Great Expectations validation passed.")
+    return True
+
+
 def main():
     """Test the scraper with a sample permit"""
     scraper = EnhancedDetailScraper(headless=False)
-    
+    s3_bucket = os.getenv("S3_EXPORT_BUCKET")
+    s3_prefix = os.getenv("S3_EXPORT_PREFIX", "")
     try:
         # Test with a sample permit
         test_permit = "BP21-0423"
         details = scraper.scrape_permit(test_permit)
-        
+
         if details:
             print(f"\nPermit: {details.permit_number}")
             print(f"Type: {details.permit_type}")
             print(f"Status: {details.status}")
             print(f"Address: {details.address}")
             print(f"Owner: {details.owner_name}")
-            print(f"Job Value: ${details.job_value:,.2f}" if details.job_value else "Job Value: N/A")
+            print(
+                f"Job Value: ${details.job_value:,.2f}"
+                if details.job_value else "Job Value: N/A"
+            )
             print(f"Completeness Score: {details.completeness_score}%")
             print(f"Data Quality Flags: {details.data_quality_flags}")
             print(f"Extraction Errors: {details.extraction_errors}")
-            
+
             if details.parsed_address:
                 print(f"\nParsed Address:")
                 for key, value in details.parsed_address.items():
                     if value:
                         print(f"  {key}: {value}")
+
+            # Data validation with Great Expectations
+            if not validate_details_with_ge(details):
+                print("Validation failed. Not exporting to S3.")
+            elif s3_bucket:
+                export_to_s3(details, s3_bucket, s3_prefix)
         else:
             print("Failed to extract permit details")
-            
     finally:
         scraper.close()
 

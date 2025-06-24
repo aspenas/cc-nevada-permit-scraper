@@ -7,4 +7,6 @@ boto3
 sqlalchemy
 pytest-cov
 bandit
-pip-audit 
+pip-audit
+watchtower
+great_expectations 

@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: scraper-restrictive
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: scraper
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector: {}
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0  # Allow egress to RDS (in VPC) and kube-dns
+      ports:
+        - protocol: TCP
+          port: 5432  # RDS Postgres
+        - protocol: UDP
+          port: 53    # DNS
+        - protocol: TCP
+          port: 53    # DNS 

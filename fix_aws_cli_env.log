@@ -1,0 +1,12 @@
+[INFO] Diagnosing AWS CLI shell environment...
+[OK] No 'aws' alias found.
+[OK] No 'aws' function found.
+[OK] AWS CLI found at /opt/homebrew/bin/aws
+[INFO] Testing AWS CLI...
+{
+    "UserId": "207567767039",
+    "Account": "207567767039",
+    "Arn": "arn:aws:iam::207567767039:root"
+}
+[OK] AWS CLI is working.
+[SUCCESS] AWS CLI environment is clean. You can now run AWS CLI commands without shell interference.

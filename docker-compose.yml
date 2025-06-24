@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: scraper
+      POSTGRES_PASSWORD: scraperpass
+      POSTGRES_DB: scraperdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  scraper:
+    build:
+      context: ./scraper
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://scraper:scraperpass@db:5432/scraperdb
+      AWS_REGION: us-west-2
+      DB_SECRET_NAME: clark-county-permit-db-dev
+      CLARK_COUNTY_USERNAME: "${CLARK_COUNTY_USERNAME:-testuser}"
+      CLARK_COUNTY_PASSWORD: "${CLARK_COUNTY_PASSWORD:-testpass}"
+    depends_on:
+      - db
+    command: ["python", "enhanced_detail_scraper_final.py"]
+    ports:
+      - "8000:8000"
+volumes:
+  db_data: 

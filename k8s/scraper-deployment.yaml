@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scraper
+  labels:
+    app: scraper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scraper
+  template:
+    metadata:
+      labels:
+        app: scraper
+    spec:
+      containers:
+        - name: scraper
+          image: ghcr.io/aspenas/cc-nevada-permit-scraper:latest
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: scraper-secrets
+                  key: DATABASE_URL
+            - name: AWS_REGION
+              value: us-west-2
+            - name: DB_SECRET_NAME
+              value: clark-county-permit-db-prod
+            - name: CLARK_COUNTY_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: scraper-secrets
+                  key: CLARK_COUNTY_USERNAME
+            - name: CLARK_COUNTY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: scraper-secrets
+                  key: CLARK_COUNTY_PASSWORD
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "2Gi" 
